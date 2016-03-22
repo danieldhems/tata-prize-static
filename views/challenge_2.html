@@ -1,0 +1,516 @@
+<!--
+
+Template fragments
+
+All code mentioned in this document can be found in file: /public/js/controllers 
+
+This template contains several fragments intended for display at different phases during each challenge life-cycle. This works by the use of several angular ng-show directives which check certain JS properties in the TataComp controller file.
+
+There are two JS objects in play here:
+
+	1. challengeState
+	2. formState
+
+1. challengeState contains the following key/value pairs:
+
+	open - true or false
+	judging - 'in progress' or 'announce'
+
+	open:
+	defines whether or not the challenge is open for entries, and sets the entry form section to show or hide respectively.
+
+	judging:
+	defines whether or not winners for a challenge have been announced.
+	Check line 54 of this template to see which fragments display based on this property.
+
+2. formState contains two namespaces - one for each entry form, and a separate property which is not form-specific.
+	
+	Both namespaces contain the following identical key/value pairs:
+
+	submitted - true or false
+	response - 'waiting' or null
+
+	submitted:
+	handles the display of inline form validation messages, and you will find this property used alongside all requird fields below.
+	It is set to true when a form submit button is pressed, and sets the submitted state for that form to true.
+	This will then trigger the display of any relevant field validation messages for the respective form.
+	NOTE: The submitted property has nothing to do with the successful submission of an entry.
+
+	response:
+	handles the state of the form once it has been sent to the server.
+	The 'waiting' value is set when the form data is sent to the server, and is used to control the display of the spinner graphic that informs the user that a response is pending. This state usually lasts only a few seconds.
+	The null value is used as a base state before the form is submitted, and merely hides the spinner graphic.
+
+	submissionComplete:
+	This property handles the overall display of the entry form section.
+	When 'false', both forms are accessible on the page. This is the base state when the user loads the page, and remains false until the submission process is completed.
+	When a form is submitted and a success message is received from the server, this property is set to true and hides the form section, replacing it with a post-submission 'thank you' message for the user.
+
+-->
+
+<!-- Video module -->
+<div class="challenge-hero site-container">
+	<!-- Flexible container for video player -->
+	<div class="media-container">
+		<!-- PLaceholder image displays before the video is loaded to avoid showing empty space -->
+		<img class="video_placeholder" src="https://f1-innovation-prize.s3.amazonaws.com/video/CHALLENGE_1_NEW_END_FRAME0_COMPETITION_CLOSED.jpg" alt="">
+		<video id="challenge-film" data-uid="challenge-film" data-player-kit="1" poster="https://f1-innovation-prize.s3.amazonaws.com/video/CHALLENGE_2_CLOSED_END_FRAME0.jpg" title="F1 CONNECTIVITY INNOVATION PRIZE - Challenge 2" controls-visibility="autohide" preload="none" data-sublime-player>
+		  <source src="https://f1-innovation-prize.s3.amazonaws.com/video/CHALLENGE_2_CHALLENGE_CLOSED_FINAL_LOW_RES.mp4" />
+		  <source src="https://f1-innovation-prize.s3.amazonaws.com/video/CHALLENGE_2_CHALLENGE_CLOSED_FINAL_HIGH_RES.mp4" data-quality="hd" />
+		</video>
+	</div>
+</div>
+
+<!-- Challenge description section -->
+<div class="intro site-container">
+	<div class="site-container">
+		<div class="content-container bottom-padding">
+		
+			<!-- heading isn't controlled by logic described at top of this document - just update as needed -->
+			<h2 class="section-heading">CHALLENGE 2 now closed</h2>
+			
+			<div ng-switch="challengeState.challenge_2.open" class="bottom-padding">
+				<!-- When challenge state is set to 'open', display the intro copy and brief download link to the user -->
+				<div ng-switch-when="true">
+					<p>Challenge 2<sup>1</sup> tasks entrants to create and sustain a virtual museum that tells the story of Mercedes-Benz in Formula 1<sup>&reg;</sup>.</p>
+					<p>Celebrating the periods of 1950–55 and 1993 to the present day, your solution must demonstrate how you would build an online virtual museum for fans to showcase, view and share content.</p>
+					<p>For more information, download the Challenge Brief and enter via the submission form below and we will award a grand prize of USD $50,000 to a winning individual or team<sup>2</sup>. Other prizes include VIP trips to the FORMULA 1 GRAND PRIX DE MONACO 2015.<sup>3</sup></p>
+					<p class="small-print"><sup>1</sup> No purchase necessary. Official Rules identifying (i) who is eligible to participate; (ii) how to participate, (iii) how winners will be selected, and (iv) a description of the prizes available are available <a href="/rules">here</a>.</p>
+					<p class="small-print"><sup>2</sup> Unless otherwise indicated in the <a href="/rules">Official Rules</a>, all cash prizes will be divided equally among all officially registered members of a registered team.</p>
+					<p class="small-print"><sup>3</sup> Dates to be confirmed.</p>
+					<p ng-show="challengeState.challenge_2.open">
+						<a data-twitter-link="http://twitter.com/home?status=I%27ve%20just%20entered%20the%20%40tata_comm%20F1%20Connectivity%20Innovation%20Prize%3A%20http%3A%2F%2Fbit.ly%2F1kxMr7o.%20Wish%20me%20luck!%20%23tatacommsf1prize" class="download-link" target="_blank" href="http://f1-innovation-prize.s3.amazonaws.com/challenge_packs/challenge_2/The%20F1%20Connectivity%20Innovation%20Prize%20%E2%80%93%20Challenge%202%20Brief.pdf">Download full brief</a>
+					</p>
+				</div>
+				<!-- When challenge state is set to 'false', show the 'challenge closed' copy, depending on some further logic... -->
+				<div ng-switch-when="false">
+					<div ng-switch="challengeState.challenge_2.judging">
+						<!-- If judging state is set to 'inProgress', show the following copy -->
+						<div ng-switch-when="inProgress">
+							<p>Challenge 2 – The MERCEDES AMG PETRONAS Formula One<sup>&trade;</sup> Team Global Scrapbook Challenge – <br>is now closed. Winners will be announced on or after 9<sup>th</sup> October 2014.</p>
+							<p>We will be announcing details of Challenge 3 on 29<sup>th</sup> October 2014<sup>1</sup></p>
+							<p>In the meantime, follow us <a href="http://twitter.com/tata_comm">@tata_comm</a> and join in the conversation using <a href="https://twitter.com/search?q=tatacommsf1prize">#tatacommsf1prize</a>.</p>
+							<p class="small-print"><sup>1</sup> No purchase necessary. Official Rules identifying (i) who is eligible to participate; (ii) how to participate, (iii) how winners will be selected, and (iv) a description of the prizes available are available here.</p>
+							<p class="small-print">Unless otherwise indicated in the <a href="/rules">Official Rules</a>, all cash prizes will be divided equally among all officially registered members of a registered team.</p>
+							<p class="small-print">Dates to be confirmed.</p>
+						</div>
+						<!-- If judging state is set to 'announce', show the winner announcement copy -->
+						<div ng-switch-when="announce">
+							<p>We are delighted to announce the winners of Challenge 2 (as listed below).</p>
+							<p>Each entry wins two VIP trips to the glamorous FORMULA 1 GRAND PRIX DE MONACO 2015 (Dates to be confirmed), and will also qualify for the shortlist of 6 winners leading up to the Grand Prize of USD $50,000.</p>
+							<p>The winners of Challenge 2 are:</p>
+							<div class="winner">
+								<h2>Winner 1: Robert Smith, UK</h2>
+								<p>Robert’s proposal is most easily described as a timeline of explorable ‘circuit views’, populated with content contributed and curated by fans. It is a combination of familiar methods and established technologies leading to a unique but intuitive user experience.</p>
+
+								<p>Built using HTML5 and JQuery, a continually growing record of events would have races organised chronologically and grouped into respective seasons to form Tier 1 of the platform, allowing fans to easily find the event they wish to explore and contribute towards. Tier 2 of the format, dubbed ‘Circuit View’, allows fans to contribute their experiences by uploading imagery, video or audio to any point of the circuit. If multiple contributors select the same location the content would be amalgamated for usability. The result would be a rich map of user-generated experiences at each race, with a natural convergence of key events.</p>
+
+								<p>Robert proposed a bespoke web language and database for storage, citing a few examples such as PHP and SQL. In terms of taxonomy, content would be visually categorised by medium. Fans would then instantly see what is available to explore at different parts of the track via a mini-map in the corner of a 360 view, or via a ‘discover new experiences’ button.</p>
+
+								<p>As a method of sharability, a voting system integrated into popular and widely-used social media sites would encourage competition between users and incentivise contributors to share content to gain the most votes.</p>
+							</div>
+							<div class="winner">
+								<h2>Winner 2: Sam Clark, Mark Massarik & Chris Tingley, UK</h2>
+								<p>Sam, Mark and Chris set forth a very clear proposal that identified three core delivery platforms that will act as the foundation for their digital museum; website, tablet and smartphone.</p>
+
+								<p>The website would showcase the most popular content on the landing page, contain frequently updated content, reward users for quality submissions, allow rapid sharing and seeding of submissions and visually display the interconnected nature of the content. They would curate the submissions into four sub-divisions; ‘New’, ‘Hot’, ‘All-Time’ and ‘Editor’s Pick’.</p>
+
+								<p>A reward system would then recognise contributors as ‘Tech Head’, ‘Photojournalist’, ‘Audiophile’ or ‘Curator’, depending on the nature of their submissions.</p>
+
+								<p>Smartphone and tablet editions would be repackaged to ease functionality and appearance and promote intuitive viewing voting and sharing of content.</p>
+
+								<p>The website would use an HTML5/Java Script framework while the mobile experience utilises both SceneKit and Open GL, giving unparalleled control over 3D interfaces, allowing a new and immersive experience where the user is able to touch and rotate the 3D content sphere.  </p>
+								<p>Every submission would have a social media button coded to share content and drive traffic back towards the virtual museum.</p>
+							</div>
+							<br>
+							
+							<p>We will be announcing the details of Challenge 3 on 4<sup>th</sup> November 2014<sup>1</sup>. At the end of the final Challenge we will award a grand prize of USD $50,000 to a winning individual or team<sup>2</sup>. Other prizes include VIP trips to the FORMULA 1 GRAND PRIX DE MONACO 2015<sup>3</sup>.
+
+							<p>In the meantime register <a href="https://prize.tatacommunications.com/home#register">here</a> to keep up to date, follow us <a href="http://twitter.com/tata_comm">@tata_comm</a> or use <a href="https://twitter.com/search?q=tatacommsf1prize">#tatacommsf1prize</a>.</p>
+
+							<p class="small-print"><sup>1</sup> No purchase necessary. Official Rules identifying (i) who is eligible to participate; (ii) how to participate, (iii) how winners will be selected, and (iv) a description of the prizes available are available <a href="https://prize.tatacommunications.com/home#prize">here</a>.</p>
+
+							<p class="small-print"><sup>2</sup> Unless otherwise indicated in the Official Rules, all cash prizes will be divided equally among all officially registered members of a registered team.</p>
+
+							<p class="small-print"><sup>3</sup> Dates to be confirmed.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="enter bg-tata-green">
+	<div class="site-container">
+		<div class="content-container bottom-padding">
+
+			<!-- Check challenge open state again, this time to control the display of the entry form section -->
+			<div ng-show="challengeState.challenge_2.open">
+
+				<!-- Check is the submission has been compelted yet, showing both forms or the post-submission thank you message -->
+				<div ng-switch="formState.submissionComplete">
+					<div ng-switch-when="false">
+						<h2 class="section-heading">Enter</h2>
+						<p>Please use the submission form below to submit your entry. <br>Remember you must use a minimum of 200 words and a maximum of 1000 in the text submission box for your entry to be accepted.</p>
+						<div class="form-control">
+							<label class="fld-label" class="form-control-heading">Select your entry type</label>
+							<select name="entry_type" ng-model="entry.type">
+								<option value="individual">Individual</option>
+								<option value="team">Team</option>
+							</select>
+						</div>
+
+						<!--
+
+						Entry forms begin here.
+
+						Ng-switch directive controls which form displays based on the value of entry.type in the controller.
+
+						-->
+						<div ng-switch="entry.type">
+
+							<!-- This snippet shows when the user selects 'individual' from the entry type dropdown -->
+							<div ng-switch-when="individual">
+								
+								<form name="entryFormIndividual" class="form clearfix" novalidate>
+									<div class="form-control">
+										<label class="fld-label" for="field-country">Country of residence</label>
+										<select name="country" id="country" ng-model="entry.individual.country" data-validate data-validate required>
+											<option value="">Please choose</option>
+											<option ng-repeat="country in ['Australia','Brazil','Canada – Ontario','Canada - Nova Scotia','Canada - New Brunswick','Canada – Manitoba','Canada - British Columbia','Canada - Prince Edward Island','Canada – Saskatchewan','Canada – Alberta','Canada - Newfoundland and Labrador','Finland','Germany','Hong Kong','India','Norway','Singapore','Spain','United Kingdom','United States']" value="{{country}}">{{country}}</option>
+										</select>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.country.$invalid && entryFormIndividual.country.$pristine" class="error-block">Please select your country</span>
+										<span class="error-block error-country">Unfortunately we are unable to accept entries from your country. To view the full list of eligible countries please refer to the <a href="/rules">Official Rules</a>. Sign up with your details <a href="/home#register">here</a> and stay updated on the F1&reg; Connectivity Innovation prize. You can follow us on Twitter <a href="https://twitter.com/tata_comm">@tata_comm</a> and join in the conversation <a href="https://twitter.com/hashtag/tatacommsf1prize?src=hash">#tatacommsf1prize</a>.</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="first_name" name="first_name" placeholder="First name" ng-model="entry.individual.first_name" data-validate data-validate required>
+										<span ng-show="formState.entryFormIndividual.submitted && (entryFormIndividual.first_name.$invalid && entryFormIndividual.first_name.$pristine)" class="error-block">Please enter your first name</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="last_name" name="last_name" placeholder="Last name" ng-model="entry.individual.last_name" data-validate data-validate required>
+										<span ng-show="formState.entryFormIndividual.submitted && (entryFormIndividual.last_name.$invalid && entryFormIndividual.last_name.$pristine)" class="error-block">Please enter your last name</span>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label label-dob" for="field-dob">Date of birth</label>
+										<select id="dob_day" name="dob_day" class="fld-select	" ng-model="entry.individual.dob_day" data-validate data-validate required>
+											<option value="">Day</option>
+											<option ng-repeat="num in [] | range:31" value="{{num}}">{{num}}</option>
+										</select>
+										<select id="dob_month" name="dob_month" class="fld-select	" ng-model="entry.individual.dob_month" data-validate data-validate required>
+											<option value="">Month</option>
+											<option ng-repeat="month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] track by $index" value="{{$index+1 | leadingZero}}">{{month}}</option>
+										</select>
+										<select id="dob_year" name="dob_year" class="fld-select	" ng-model="entry.individual.dob_year" data-validate data-validate required>
+											<option value="">Year</option>
+											<option ng-repeat="num in [] | range:[1900,1996]" value="{{num}}">{{num}}</option>
+										</select>
+										<span ng-show="formState.entryFormIndividual.submitted && (!entryFormIndividual.dob_day.$dirty || !entryFormIndividual.dob_month.$dirty || !entryFormIndividual.dob_year.$dirty)" class="error-block">Please select your date of birth</span>
+									</div>
+
+									<div class="form-control">
+										<input type="email" id="email" name="email" placeholder="Email address" ng-model="entry.individual.email" ng-pattern="/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i" data-check-email-exists required data-validate>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.email.$invalid && entryFormIndividual.email.$pristine" class="error-block">Please enter your email</span>
+										<span class="error-email-exists error-block">Email already submitted</span>
+									</div>
+									
+									<div class="form-control">
+										<input type="email" id="confirm_email" name="confirm_email" placeholder="Confirm email address" ng-model="entry.individual.confirm_email" data-confirm-email="entry.individual.email" data-prevent-paste data-validate data-validate required>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.confirm_email.$invalid && entryFormIndividual.confirm_email.$pristine" class="error-block">Please confirm your email</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="phone_number" name="phone_number" placeholder="Phone number" ng-model="entry.individual.phone_number" data-validate data-validate required>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.phone_number.$invalid && entryFormIndividual.phone_number.$pristine" class="error-block">Please enter your phone number</span>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label" for="field-source">How did you hear about this challenge?</label>
+										<select name="referral_name" ng-model="entry.individual.referral_name" data-validate data-validate required>
+											<option value="">Please choose</option>
+											<option ng-repeat="source in ['News website','Other website','Social media','Colleague/business associate','Friends and family','Search engine','Other'] track by $index" value="{{source}}">{{source}}</option>
+										</select>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.referral_name.$pristine" class="error-block">Please select an option</span>
+										<div class="form-control" ng-show="entry.individual.referral_name == 'News website' || entry.individual.referral_name == 'Other website' || entry.individual.referral_name == 'Colleague/business associate' || entry.individual.referral_name == 'Other'">
+											<label class="fld-label">Please state where...</label>
+											<textarea id="referral_text" class="fld-text" name="referral_text" rows="2" ng-model="entry.individual.referral_text" data-validate></textarea>
+										</div>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label" for="field-supporting_text">Enter your supporting text</label>
+										<span class="help-block">Min 200 words, max 1000 words</span>
+										<textarea class="fld-text txt-supporting_text" name="supporting_text" rows="8" ng-model="entry.individual.supporting_text" data-valid-word-range="[200,1000]" data-validate data-validate required></textarea>
+										<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.supporting_text.$pristine" class="error-block">Please enter your supporting text.</span>
+									</div>
+
+									<div class="form-group upload-section">
+										<label class="fld-label upload-label">Upload supporting file/s.</label>
+										<p class="help-block">You must submit at least one, but no more than three supporting files.<br>Acceptable file type are PDF, JPG, JPEG &amp; PNG. Max file size per upload is 5 MB.</p>
+										<div class="form-control clearfix">
+											<input class="file" name="upload1" type="file" file-model="entry.individual.upload1" ng-model="entry.individual.upload1" data-removable required>
+											<span ng-show="formState.entryFormIndividual.submitted && entryFormIndividual.upload1.$pristine" class="error-block">Please upload at least 1 file</span>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+										<div class="form-control clearfix">
+											<input class="file" id="teamUpload2" name="upload2" type="file" file-model="entry.individual.upload2" ng-model="entry.individual.upload2" data-removable>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+										<div class="form-control clearfix">
+											<input class="file" name="upload3" type="file" file-model="entry.individual.upload3" ng-model="entry.individual.upload3" data-removable>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+									</div>
+
+									<p class="strong">Only 2 VIP trips will be awarded per winning entry per challenge.</p>
+									<p class="strong">You will NOT be able to alter your submission in any way after pressing SUBMIT. All entries are final. You can only enter each challenge once either as an individual or as part of a team.</p>
+
+									<div class="form-control form-control-checkbox clearfix">
+										<label class="fld-label checkbox-label" data-augment-checkbox id="fld-terms-label" ng-class="{'has-error': formState.entryFormIndividual.submitted && !entryFormIndividual.terms.checked}">
+											<input id="fld-terms" class="checkbox hidden" type="checkbox" name="terms" ng-model="entry.individual.terms" required>
+											<span class="checkbox-mask"></span>
+											<span class="checkbox-text">I agree to the <a href="#rules" target="_blank">Official Rules</a> of the contest</span>
+										</label>
+									</div>
+
+									<img class="waiting-icon" ng-show="challengeState.response == 'waiting'" src="./images/submit_loading_05.gif" alt="">
+									<button ng-show="challengeState.response == null" class="btn-submit align-center" ng-click="submitEntry(entryFormIndividual)">Submit</button>
+								</form>
+							</div>
+
+							<!-- This snippet shows when the user selects 'team' from the entry type dropdown -->
+							<div ng-switch-when="team">
+								<form name="entryFormTeam" class="form clearfix" novalidate>
+
+									<p>Teams may have no more than 4 individuals</p>
+
+									<div class="form-control">
+										<label class="fld-label" for="field-country">Country of residence</label>
+										<select name="country" id="country" ng-model="entry.team.country" data-validate required>
+											<option value="">Please choose</option>
+											<option ng-repeat="country in ['Australia','Brazil','Canada – Ontario','Canada - Nova Scotia','Canada - New Brunswick','Canada – Manitoba','Canada - British Columbia','Canada - Prince Edward Island','Canada – Saskatchewan','Canada – Alberta','Canada - Newfoundland and Labrador','Finland','Germany','Hong Kong','India','Norway','Singapore','Spain','United Kingdom','United States']" value="{{country}}">{{country}}</option>
+										</select>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.country.$invalid && entryFormTeam.country.$pristine" class="error-block">Please select your country</span>
+										<span class="error-block error-country">Unfortunately we are unable to accept entries from your country. To view the full list of eligible countries please refer to the <a href="/rules">Official Rules</a>. Sign up with your details <a href="/home#register">here</a> and stay updated on the F1&reg; Connectivity Innovation prize. You can follow us on Twitter <a href="https://twitter.com/tata_comm">@tata_comm</a> and join in the conversation <a href="https://twitter.com/hashtag/tatacommsf1prize?src=hash">#tatacommsf1prize</a>.</span>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label" for="field-source">How did you hear about this challenge?</label>
+										<select name="referral_name" ng-model="entry.team.referral_name" data-validate required>
+											<option value="">Please choose</option>
+											<option ng-repeat="source in ['News website','Other website','Social media','Colleague/business associate','Friends and family','Search engine','Other'] track by $index" value="{{source}}">{{source}}</option>
+										</select>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.referral_name.$pristine" class="error-block">Please select an option</span>
+										<div class="form-control" ng-show="entry.team.referral_name == 'News website' || entry.team.referral_name == 'Other website' || entry.team.referral_name == 'Colleague/business associate' || entry.team.referral_name == 'Other'">
+											<label class="fld-label">Please state where...</label>
+											<textarea id="team_referral_text" class="fld-text" name="referral_text" rows="2" ng-model="entry.team.referral_text"></textarea>
+										</div>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label" class="form-control-heading">Team leader</label>
+										<input type="text" id="leader_first_name" name="leader_first_name" placeholder="First name" ng-model="entry.team.leader_first_name" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.leader_first_name.$invalid && entryFormTeam.leader_first_name.$pristine" class="error-block">Please enter your first name</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="leader_last_name" name="leader_last_name" placeholder="Last name" ng-model="entry.team.leader_last_name" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.leader_last_name.$invalid && entryFormTeam.leader_last_name.$pristine" class="error-block">Please enter your last name</span>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label label-dob" for="field-dob">Date of birth</label>
+										<select id="leader_dob_day" name="leader_dob_day" class="fld-select" ng-model="entry.team.leader_dob_day" data-validate required>
+											<option value="">Day</option>
+											<option ng-repeat="num in [] | range:31" value="{{num}}">{{num}}</option>
+										</select>
+										<select id="leader_dob_month" name="leader_dob_month" class="fld-select" ng-model="entry.team.leader_dob_month" data-validate required>
+											<option value="">Month</option>
+											<option ng-repeat="month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] track by $index" value="{{$index+1 | leadingZero}}">{{month}}</option>
+										</select>
+										<select id="leader_dob_year" name="leader_dob_year" class="fld-select" ng-model="entry.team.leader_dob_year" data-validate required>
+											<option value="">Year</option>
+											<option ng-repeat="num in [] | range:[1900,1996]" value="{{num}}">{{num}}</option>
+										</select>
+										<span ng-show="formState.entryFormTeam.submitted && (entryFormTeam.leader_dob_day.$pristine && entryFormTeam.leader_dob_month.$pristine && entryFormTeam.leader_dob_year.$pristine)" class="error-block">Please select your date of birth</span>
+									</div>
+
+									<div class="form-control">
+										<input type="email" id="leader_email" name="leader_email" placeholder="Email address" ng-model="entry.team.leader_email" ng-pattern="/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i" data-check-email-exists data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.leader_email.$invalid && entryFormTeam.leader_email.$pristine" class="error-block">Please enter your email</span>
+										<span ng-show="entryFormTeam.leader_email.$invalid-email-exists && entryFormTeam.leader_email.$dirty" class="error-email-exists error-block">Email already submitted</span>
+									</div>
+									
+									<div class="form-control">
+										<input type="email" id="leader_confirm_email" name="leader_confirm_email" placeholder="Confirm email address" ng-model="entry.team.leader_confirm_email" data-prevent-paste data-confirm-email="entry.team.leader_email" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.leader_confirm_email.$invalid && entryFormTeam.leader_confirm_email.$pristine" class="error-block">Please confirm your email</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="phone_number" name="phone_number" placeholder="Phone number" ng-model="entry.team.phone_number" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.phone_number.$invalid && entryFormTeam.phone_number.$pristine" class="error-block">Please enter your phone number</span>
+									</div>
+
+									<p>If we need to communicate with your team, all communications will be sent to the team leader.</p>
+
+									<!-- member 1 -->
+									<div class="form-control">
+										<label class="fld-label" class="form-control-heading">Team member</label>
+										<input type="text" id="member_1_first_name" name="member_1_first_name" placeholder="First name" ng-model="entry.team.member_1_first_name" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.member_1_first_name.$invalid && entryFormTeam.member_1_first_name.$pristine" class="error-block">Please enter your first name</span>
+									</div>
+
+									<div class="form-control">
+										<input type="text" id="member_1_last_name" name="member_1_last_name" placeholder="Last name" ng-model="entry.team.member_1_last_name" data-validate required>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.member_1_last_name.$invalid && entryFormTeam.member_1_last_name.$pristine" class="error-block">Please enter your last name</span>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label label-dob" for="field-dob">Date of birth</label>
+										<select name="entryFormTeam.member_1_dob_day" class="fld-select" ng-model="entry.team.member_1_dob_day" data-validate required>
+											<option value="">Day</option>
+											<option ng-repeat="num in [] | range:31" value="{{num}}">{{num}}</option>
+										</select>
+										<select name="member_1_dob_month" class="fld-select" ng-model="entry.team.member_1_dob_month" data-validate required>
+											<option value="">Month</option>
+											<option ng-repeat="month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] track by $index" value="{{$index+1 | leadingZero}}">{{month}}</option>
+										</select>
+										<select name="member_1_dob_year" class="fld-select" ng-model="entry.team.member_1_dob_year" data-validate required>
+											<option value="">Year</option>
+											<option ng-repeat="num in [] | range:[1900,1996]" value="{{num}}">{{num}}</option>
+										</select>
+										<span ng-show="formState.entryFormTeam.submitted && (entryFormTeam.member_1_dob_day.$pristine && entryFormTeam.member_1_dob_month.$pristine && entryFormTeam.member_1_dob_year.$pristine)" class="error-block">Please select your date of birth</span>
+									</div>
+									
+									<!-- member 2 -->
+									<div class="form-control">
+										<label class="fld-label" class="form-control-heading">Team member</label>
+										<input type="text" name="member_2_first_name" placeholder="First name" ng-model="entry.team.member_2_first_name">
+									</div>
+
+									<div class="form-control">
+										<input type="text" name="member_2_last_name" placeholder="Last name" ng-model="entry.team.member_2_last_name">
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label label-dob" for="field-dob">Date of birth</label>
+										<select name="member_2_dob_day" class="fld-select" ng-model="entry.team.member_2_dob_day">
+											<option value="">Day</option>
+											<option ng-repeat="num in [] | range:31" value="{{num}}">{{num}}</option>
+										</select>
+										<select name="member_2_dob_month" class="fld-select" ng-model="entry.team.member_2_dob_month">
+											<option value="">Month</option>
+											<option ng-repeat="month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] track by $index" value="{{$index+1 | leadingZero}}">{{month}}</option>
+										</select>
+										<select name="member_2_dob_year" class="fld-select" ng-model="entry.team.member_2_dob_year">
+											<option value="">Year</option>
+											<option ng-repeat="num in [] | range:[1900,1996]" value="{{num}}">{{num}}</option>
+										</select>
+									</div>
+
+									<!-- Member 3 -->
+									<div class="form-control">
+										<label class="fld-label" class="form-control-heading">Team member</label>
+										<input type="text" name="member_3_first_name" placeholder="First name" ng-model="entry.team.member_3_first_name">	
+									</div>
+
+									<div class="form-control">
+										<input type="text" name="member_3_last_name" placeholder="Last name" ng-model="entry.team.member_3_last_name">
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label label-dob" for="field-dob">Date of birth</label>
+										<select name="member_3_dob_day" class="fld-select" ng-model="entry.team.member_3_dob_day">
+											<option value="">Day</option>
+											<option ng-repeat="num in [] | range:31" value="{{num}}">{{num}}</option>
+										</select>
+										<select name="member_3_dob_month" class="fld-select" ng-model="entry.team.member_3_dob_month">
+											<option value="">Month</option>
+											<option ng-repeat="month in ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] track by $index" value="{{$index+1 | leadingZero}}">{{month}}</option>
+										</select>
+										<select name="member_3_dob_year" class="fld-select" ng-model="entry.team.member_3_dob_year">
+											<option value="">Year</option>
+											<option ng-repeat="num in [] | range:[1900,1996]" value="{{num}}">{{num}}</option>
+										</select>
+									</div>
+
+									<div class="form-control">
+										<label class="fld-label" for="field-supporting_text">Enter your supporting text</label>
+										<span class="help-block">Min 200 words, max 1000 words</span>
+										<textarea name="supporting_text" rows="8" class="fld-text txt-supporting_text" ng-model="entry.team.supporting_text" data-valid-word-range="[200,1000]" data-validate required></textarea>
+										<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.supporting_text.$pristine && entryFormTeam.supporting_text.$invalid" class="error-block">Please enter your supporting text.</span>
+									</div>
+
+									<div class="form-control upload-section">
+										<label class="fld-label upload-label">Upload supporting file/s</label>
+										<p class="help-block">You must submit at least one, but no more than three supporting files.<br>Acceptable file type are PDF, JPG, JPEG &amp; PNG. Max file size per upload is 5 MB.</p>
+										<div class="form-control clearfix">
+											<input class="file" name="upload1" type="file" file-model="entry.team.upload1" ng-model="entry.team.upload1" data-removable required>
+											<span ng-show="formState.entryFormTeam.submitted && entryFormTeam.upload1.$invalid" class="error-block">Please upload at least 1 file</span>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+										<div class="form-control clearfix">
+											<input class="file" name="upload2" type="file" file-model="entry.team.upload2" ng-model="entry.team.upload2" data-removable>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+										<div class="form-control clearfix">
+											<input class="file" name="upload3" type="file" file-model="entry.team.upload3" ng-model="entry.team.upload3" data-removable>
+											<span class="error-file-size error-block">File size larger than 5MB</span>
+											<span class="error-file-type error-block">File type not supported</span>
+										</div>
+									</div>
+
+									<p class="strong">Only 2 VIP trips will be given per winning entry per. For the winning team, the team lead will be responsible to share the names of the two team members to avail the prize</p>
+									<p class="strong">You will NOT be able to alter your submission in any way after pressing SUBMIT. All entries are final. You can only enter each challenge once either as an individual or as part of a team.</p>
+
+									<div class="form-control form-control-checkbox clearfix">
+										<label class="fld-label checkbox-label clearfix" data-augment-checkbox id="fld-terms-label" ng-class="{'has-error': formState.entryFormTeam.submitted && !entryFormTeam.terms.checked}">
+											<input id="fld-terms" class="checkbox hidden" type="checkbox" name="terms" ng-model="entry.team.terms" data-validate required>
+											<span class="checkbox-mask"></span>
+											<span class="checkbox-text">I agree to the <a href="#rules" target="_blank">Official Rules</a> of the contest</span>
+										</label>
+									</div>
+
+									<!-- As mentioned at the top of this document, show the submission spinner graphic is the form has been submitted and we are waiting for a success response from the server. -->
+									<img class="waiting-icon" ng-show="challengeState.response === 'waiting'" src="./images/submit_loading_05.gif" alt="">
+									<button ng-show="challengeState.response == null" class="btn-submit align-center" ng-click="submitEntry(entryFormTeam)">Submit</button>
+								</form>
+
+							</div>
+						</div>
+					</div>
+					<!-- When submissionComplete is set to 'true', replace form with thank you message -->
+					<div ng-switch-when="true">
+						<h3 class="heading post-submit-heading">Thank you for your entry</h3>
+						<p>You have successfully submitted your entry to The F1<sup>&reg;</sup> Connectivity Innovation Prize.<br>Good luck and keep an eye out for news and updates by following <a href="https://twitter.com/tata_comm">@tata_comm</a> and joining the conversation <a href="https://twitter.com/hashtag/tatacommsf1prize?src=hash">#tatacommsf1prize</a>.</p>
+						<div class="share post-entry">
+	            <ul class="share-buttons group">
+	              <li class="share-icon push-linkedin">
+	                  <a class="facebook-icon" href="https://www.facebook.com/sharer/sharer.php?u=http://prize.tatacommunications.com" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=no,scrollbars=no');return false;">
+	                  </a>                            
+	              </li>
+	              <li class="share-icon">
+	                  <a class="linkedin-icon" ng-href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fprize.tatacommunications.com&amp;title=F1%20Connectivity%20Innovation%20Prize&amp;summary=I%27ve%20just%20entered%20Challenge%20{{challengeState.current_challenge}}%20for%20the%20F1%20Connectivity%20Innovation%20Prize.%0A%0AWish%20me%20luck!%20Check%20out%20%40tata_comm%20F1%20Connectivity%20Innovation%20Prize%3A%20http%3A%2F%2Fbit.ly%2F1kxMr7o.%20%23tatacommsf1prize&amp;source=http%3A%2F%2Fprize.tatacommunications.com" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=no,scrollbars=no');return false;">
+	                </a>
+	              </li>
+	              <li class="share-icon">
+	                  <a class="twitter-icon" id="ref_tw" ng-href="http://twitter.com/home?status=I%27ve%20just%20entered%20the%20%40tata_comm%20F1%20Connectivity%20Innovation%20Prize%3A%20http%3A%2F%2Fbit.ly%2F1kxMr7o.%20Wish%20me%20luck!%20%23tatacommsf1prize" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=no,scrollbars=no');return false;">
+	                  </a>
+	              </li>
+	            </ul>
+	            <p class="share-text">Share your entry!</p>
+	          </div>
+          </div>
+				</div>
+			</div> <!-- Submission complete condition ends -->
+		</div>
+	</div>
+</div>
